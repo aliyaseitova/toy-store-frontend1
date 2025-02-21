@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Products</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <button onclick="logout()">Logout</button>
+        <button onclick="window.location.href='cart.html'">View Cart</button>
+    </nav>
+
+    <h1>Available Products</h1>
+
+    <div class="filter-container">
+        <input type="text" id="searchQuery" placeholder="Search products...">
+        <input type="number" id="minPrice" placeholder="Min Price">
+        <input type="number" id="maxPrice" placeholder="Max Price">
+        <label><input type="checkbox" id="inStock"> In Stock Only</label>
+        <button onclick="fetchFilteredProducts()">Search</button>
+    </div>
+
+    <div id="productList" class="grid-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

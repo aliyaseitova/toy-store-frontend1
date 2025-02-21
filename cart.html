@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "login.html";
+        }
+    </script>
+</head>
+<body>
+    <nav>
+        <button onclick="logout()">Logout</button>
+        <button onclick="window.location.href='products.html'">Back to Products</button>
+    </nav>
+    <h1>Shopping Cart</h1>
+    <div id="cart"></div>
+    <h3 id="totalPrice"></h3>
+    <button onclick="checkout()">Proceed to Checkout</button>
+    <script src="script.js"></script>
+</body>
+</html>

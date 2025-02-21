@@ -1,0 +1,171 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1 {
+    color: #222;
+    margin-bottom: 20px;
+}
+
+/* Navigation Bar */
+nav {
+    background-color: #444;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav button {
+    background-color: #666;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+nav button:hover {
+    background-color: #888;
+}
+
+/* Form Container */
+form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 50px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #5a67d8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #434190;
+}
+
+p {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+a {
+    color: #5a67d8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Grid Layout for Products */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+    gap: 20px;
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* Product Card */
+.grid-item {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+    height: 350px; /* Ensure all product cards have the same height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Ensure Product Info is Balanced */
+.grid-item .product-details {
+    flex-grow: 1; /* Allows dynamic spacing */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Image Styling */
+.grid-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+/* Force Button to Bottom */
+.grid-item .add-to-cart {
+    margin-top: auto; /* Pushes button to bottom */
+    width: 100%; /* Ensures button takes full width */
+    background-color: #5a67d8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.grid-item .add-to-cart:hover {
+    background-color: #434190;
+}
+/* Admin Dashboard Styles */
+h1, h2 {
+    color: #222;
+}
+
+#popularProducts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+body, html {
+    height: 100%;
+    overflow-x: hidden;
+}
