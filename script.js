@@ -72,21 +72,6 @@ function logout() {
     }
 }
 
-// Fetch Products (Default)
-async function fetchProducts() {
-    try {
-        const response = await fetch(`${backendUrl}/products`);
-        if (!response.ok) throw new Error("Failed to fetch products");
-
-        const products = await response.json();
-        console.log("✅ Products received:", products);
-
-        displayProducts(products);
-    } catch (error) {
-        console.error("❌ Error fetching products:", error);
-    }
-}
-
 // ✅ **Fix: Fetch Filtered Products**
 async function fetchFilteredProducts() {
     const query = document.getElementById("searchQuery").value.trim();
@@ -95,7 +80,7 @@ async function fetchFilteredProducts() {
     const inStock = document.getElementById("inStock").checked ? "true" : "";
 
     let apiUrl = `${backendUrl}/products/search?`;
-    if (query) apiUrl += `query=${query}&`;
+    if (query) apiUrl += `query=${encodeURIComponent(query)}&`;
     if (minPrice) apiUrl += `minPrice=${minPrice}&`;
     if (maxPrice) apiUrl += `maxPrice=${maxPrice}&`;
     if (inStock) apiUrl += `inStock=true&`;
