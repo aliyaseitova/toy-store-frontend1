@@ -87,17 +87,15 @@ async function fetchProducts() {
     }
 }
 
-// Fetch Filtered Products
+// Fetch Filtered Products (Category removed)
 async function fetchFilteredProducts() {
     const query = document.getElementById("searchQuery").value;
-    const category = document.getElementById("categoryFilter").value;
     const minPrice = document.getElementById("minPrice").value;
     const maxPrice = document.getElementById("maxPrice").value;
     const inStock = document.getElementById("inStock").checked ? "true" : "";
 
     let apiUrl = `${backendUrl}/products/search?`;
     if (query) apiUrl += `query=${query}&`;
-    if (category) apiUrl += `category=${category}&`;
     if (minPrice) apiUrl += `minPrice=${minPrice}&`;
     if (maxPrice) apiUrl += `maxPrice=${maxPrice}&`;
     if (inStock) apiUrl += `inStock=true&`;
@@ -224,5 +222,6 @@ async function addToCart(productId) {
 checkAuth();
 if (document.getElementById("registerForm")) document.getElementById("registerForm").addEventListener("submit", registerUser);
 if (document.getElementById("loginForm")) document.getElementById("loginForm").addEventListener("submit", loginUser);
+if (document.getElementById("searchButton")) document.getElementById("searchButton").addEventListener("click", fetchFilteredProducts);
 if (document.getElementById("productList")) fetchProducts();
 if (document.getElementById("cart")) fetchCart();
