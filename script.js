@@ -1,4 +1,4 @@
-const backendUrl = "https://toy-store-backend.onrender.com/api";
+const backendUrl = "https://toy-store-backend.onrender.com";
 
 
 // Redirect Unauthenticated Users to Login
