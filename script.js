@@ -342,3 +342,4 @@ if (document.getElementById("registerForm")) document.getElementById("registerFo
 if (document.getElementById("loginForm")) document.getElementById("loginForm").addEventListener("submit", loginUser);
 if (document.getElementById("productList")) fetchProducts();
 if (document.getElementById("cart")) fetchCart();
+document.getElementById("filterButton").addEventListener("click", fetchFilteredProducts);
