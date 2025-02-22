@@ -96,12 +96,15 @@ async function fetchFilteredProducts() {
     const maxPrice = document.getElementById("maxPrice").value;
     const inStock = document.getElementById("inStock").checked ? "true" : "";
 
-    let apiUrl = `${backendUrl}/products/search?`;
-    if (query) apiUrl += `query=${query}&`;
-    if (category) apiUrl += `category=${category}&`;
-    if (minPrice) apiUrl += `minPrice=${minPrice}&`;
-    if (maxPrice) apiUrl += `maxPrice=${maxPrice}&`;
-    if (inStock) apiUrl += `inStock=true&`;
+    let params = new URLSearchParams();
+    if (query) params.append("query", query);
+    if (category) params.append("category", category);
+    if (minPrice) params.append("minPrice", minPrice);
+    if (maxPrice) params.append("maxPrice", maxPrice);
+    if (inStock) params.append("inStock", "true");
+
+let apiUrl = `${backendUrl}/products/search?${params.toString()}`;
+
 
     try {
         const response = await fetch(apiUrl);
