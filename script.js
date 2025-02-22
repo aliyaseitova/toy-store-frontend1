@@ -87,29 +87,33 @@ async function fetchProducts() {
     }
 }
 
-// Fetch Cart Items
-async function fetchCart() {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in first!");
-        window.location.href = "login.html";
-        return;
-    }
+// ✅ **Fix: Fetch Filtered Products**
+async function fetchFilteredProducts() {
+    const query = document.getElementById("searchQuery").value.trim();
+    const minPrice = document.getElementById("minPrice").value;
+    const maxPrice = document.getElementById("maxPrice").value;
+    const inStock = document.getElementById("inStock").checked ? "true" : "";
+
+    let apiUrl = `${backendUrl}/products/search?`;
+    if (query) apiUrl += `query=${query}&`;
+    if (minPrice) apiUrl += `minPrice=${minPrice}&`;
+    if (maxPrice) apiUrl += `maxPrice=${maxPrice}&`;
+    if (inStock) apiUrl += `inStock=true&`;
 
     try {
-        const response = await fetch(`${backendUrl}/cart/${userId}`);
-        if (!response.ok) throw new Error("Failed to fetch cart");
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Failed to fetch filtered products");
 
-        const cart = await response.json();
-        console.log("🛒 Cart Items Received:", cart);
+        const products = await response.json();
+        console.log("✅ Filtered Products received:", products);
 
-        displayCart(cart);
+        displayProducts(products);
     } catch (error) {
-        console.error("❌ Error fetching cart:", error);
+        console.error("❌ Error fetching filtered products:", error);
     }
 }
 
-// Display Products in Grid
+// ✅ **Fix: Display Products in Grid**
 function displayProducts(products) {
     const productList = document.getElementById("productList");
     productList.innerHTML = "";
@@ -164,7 +168,29 @@ async function addToCart(productId) {
     }
 }
 
-// ✅ **Display Cart Items**
+// ✅ **Fix: Fetch & Display Cart**
+async function fetchCart() {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+        alert("❌ Please log in first!");
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const response = await fetch(`${backendUrl}/cart/${userId}`);
+        if (!response.ok) throw new Error("Failed to fetch cart");
+
+        const cart = await response.json();
+        console.log("🛒 Cart Items Received:", cart);
+
+        displayCart(cart);
+    } catch (error) {
+        console.error("❌ Error fetching cart:", error);
+    }
+}
+
+// ✅ **Fix: Display Cart Items**
 function displayCart(cart) {
     const cartDiv = document.getElementById("cart");
     const totalPriceElement = document.getElementById("totalPrice");
@@ -193,34 +219,6 @@ function displayCart(cart) {
     });
 
     totalPriceElement.innerText = `Total Price: $${totalPrice.toFixed(2)}`;
-}
-
-// ✅ **Remove Product from Cart**
-async function removeFromCart(productId) {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in first!");
-        window.location.href = "login.html";
-        return;
-    }
-
-    try {
-        const response = await fetch(`${backendUrl}/cart/remove`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, productId })
-        });
-
-        if (response.ok) {
-            alert("✅ Item removed from cart!");
-            fetchCart(); // Refresh cart
-        } else {
-            const data = await response.json();
-            alert(`❌ Error: ${data.message}`);
-        }
-    } catch (error) {
-        console.error("❌ Error removing item from cart:", error);
-    }
 }
 
 // Event Listeners
