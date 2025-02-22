@@ -90,12 +90,15 @@ async function fetchProducts() {
 
 // Fetch Filtered Products
 async function fetchFilteredProducts() {
-    const query = document.getElementById("searchQuery").value;
-    const category = document.getElementById("categoryFilter").value;
-    const minPrice = document.getElementById("minPrice").value;
-    const maxPrice = document.getElementById("maxPrice").value;
-    const inStock = document.getElementById("inStock").checked ? "true" : "";
+    if (!document.getElementById("searchQuery")) return; // Ensure the search input exists
+    
+    const query = document.getElementById("searchQuery").value.trim();
+    const category = document.getElementById("categoryFilter")?.value || "";
+    const minPrice = document.getElementById("minPrice")?.value || "";
+    const maxPrice = document.getElementById("maxPrice")?.value || "";
+    const inStock = document.getElementById("inStock")?.checked ? "true" : "";
 
+    // Construct query parameters safely
     let params = new URLSearchParams();
     if (query) params.append("query", query);
     if (category) params.append("category", category);
@@ -103,21 +106,24 @@ async function fetchFilteredProducts() {
     if (maxPrice) params.append("maxPrice", maxPrice);
     if (inStock) params.append("inStock", "true");
 
-let apiUrl = `${backendUrl}/products/search?${params.toString()}`;
-
-
+    const apiUrl = `${backendUrl}/products/search?${params.toString()}`;
+    
     try {
+        console.log("📡 Sending API Request to:", apiUrl);
+
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error("Failed to fetch filtered products");
 
         const products = await response.json();
         console.log("✅ Filtered Products received:", products);
 
-        displayProducts(products);
+        displayProducts(products); // Display filtered products
     } catch (error) {
         console.error("❌ Error fetching filtered products:", error);
+        alert("❌ Failed to fetch filtered products. Try again.");
     }
 }
+
 
 // Display Products in Grid
 function displayProducts(products) {
@@ -345,4 +351,3 @@ if (document.getElementById("registerForm")) document.getElementById("registerFo
 if (document.getElementById("loginForm")) document.getElementById("loginForm").addEventListener("submit", loginUser);
 if (document.getElementById("productList")) fetchProducts();
 if (document.getElementById("cart")) fetchCart();
-document.getElementById("filterButton").addEventListener("click", fetchFilteredProducts);
