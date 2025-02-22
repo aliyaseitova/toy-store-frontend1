@@ -266,14 +266,15 @@ async function addToCart(productId) {
         return;
     }
 
-    // ✅ Prompt user for quantity & validate input
+    // ✅ Prompt user for quantity & ensure it's a valid number
     let quantity = prompt("Enter quantity:", "1");
-    quantity = parseInt(quantity, 10);
 
-    if (isNaN(quantity) || quantity < 1) {
+    if (!quantity || isNaN(quantity) || parseInt(quantity) < 1) {
         alert("❌ Please enter a valid quantity (1 or more).");
         return;
     }
+
+    quantity = parseInt(quantity, 10); // Convert to integer
 
     try {
         const response = await fetch(`${backendUrl}/cart/add`, {
@@ -286,7 +287,7 @@ async function addToCart(productId) {
 
         if (response.ok) {
             alert(`✅ ${quantity} item(s) added to cart!`);
-            fetchCart(); // ✅ Refresh cart after adding item
+            fetchCart(); // Refresh the cart after adding an item
         } else {
             alert(`❌ Error: ${data.message}`);
         }
@@ -295,6 +296,7 @@ async function addToCart(productId) {
         alert("❌ Failed to add item to cart. Try again.");
     }
 }
+
 
 
 // ✅ Ensure product cards have a quantity selector
