@@ -90,40 +90,31 @@ async function fetchProducts() {
 
 // Fetch Filtered Products
 async function fetchFilteredProducts() {
-    if (!document.getElementById("searchQuery")) return; // Ensure the search input exists
-    
-    const query = document.getElementById("searchQuery").value.trim();
-    const category = document.getElementById("categoryFilter")?.value || "";
-    const minPrice = document.getElementById("minPrice")?.value || "";
-    const maxPrice = document.getElementById("maxPrice")?.value || "";
-    const inStock = document.getElementById("inStock")?.checked ? "true" : "";
+    const query = document.getElementById("searchQuery").value;
+    const category = document.getElementById("categoryFilter").value;
+    const minPrice = document.getElementById("minPrice").value;
+    const maxPrice = document.getElementById("maxPrice").value;
+    const inStock = document.getElementById("inStock").checked ? "true" : "";
 
-    // Construct query parameters safely
-    let params = new URLSearchParams();
-    if (query) params.append("query", query);
-    if (category) params.append("category", category);
-    if (minPrice) params.append("minPrice", minPrice);
-    if (maxPrice) params.append("maxPrice", maxPrice);
-    if (inStock) params.append("inStock", "true");
+    let apiUrl = `${backendUrl}/products/search?`;
+    if (query) apiUrl += `query=${query}&`;
+    if (category) apiUrl += `category=${category}&`;
+    if (minPrice) apiUrl += `minPrice=${minPrice}&`;
+    if (maxPrice) apiUrl += `maxPrice=${maxPrice}&`;
+    if (inStock) apiUrl += `inStock=true&`;
 
-    const apiUrl = `${backendUrl}/products/search?${params.toString()}`;
-    
     try {
-        console.log("📡 Sending API Request to:", apiUrl);
-
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error("Failed to fetch filtered products");
 
         const products = await response.json();
         console.log("✅ Filtered Products received:", products);
 
-        displayProducts(products); // Display filtered products
+        displayProducts(products);
     } catch (error) {
         console.error("❌ Error fetching filtered products:", error);
-        alert("❌ Failed to fetch filtered products. Try again.");
     }
 }
-
 
 // Display Products in Grid
 function displayProducts(products) {
@@ -266,38 +257,33 @@ async function addToCart(productId) {
         return;
     }
 
-    // ✅ Prompt user for quantity & ensure it's a valid number
+    // ✅ Prompt user for quantity
     let quantity = prompt("Enter quantity:", "1");
+    quantity = parseInt(quantity);
 
-    if (!quantity || isNaN(quantity) || parseInt(quantity) < 1) {
-        alert("❌ Please enter a valid quantity (1 or more).");
+    if (isNaN(quantity) || quantity < 1) {
+        alert("Please enter a valid quantity (1 or more).");
         return;
     }
-
-    quantity = parseInt(quantity, 10); // Convert to integer
 
     try {
         const response = await fetch(`${backendUrl}/cart/add`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, productId, quantity }) // ✅ Ensure quantity is included
+            body: JSON.stringify({ userId, productId, quantity })
         });
 
         const data = await response.json();
 
         if (response.ok) {
             alert(`✅ ${quantity} item(s) added to cart!`);
-            fetchCart(); // Refresh the cart after adding an item
         } else {
             alert(`❌ Error: ${data.message}`);
         }
     } catch (error) {
         console.error("❌ Error adding to cart:", error);
-        alert("❌ Failed to add item to cart. Try again.");
     }
 }
-
-
 
 // ✅ Ensure product cards have a quantity selector
 function displayProducts(products) {
@@ -312,49 +298,11 @@ function displayProducts(products) {
             <img src="${product.image}" width="150" height="150">
             <p><strong>Description:</strong> ${product.description}</p>
             <p><strong>Price:</strong> $${product.price}</p>
-            <input type="number" id="qty-${product._id}" value="1" min="1" style="width: 50px;">
-            <button onclick="addToCartWithQuantity('${product._id}')">Add to Cart</button>
+            <button onclick="addToCart('${product._id}')">Add to Cart</button>
         `;
         productList.appendChild(productItem);
     });
 }
-
-// ✅ Separate function for adding to cart with input field quantity
-async function addToCartWithQuantity(productId) {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in first!");
-        window.location.href = "login.html";
-        return;
-    }
-
-    let quantity = parseInt(document.getElementById(`qty-${productId}`).value, 10);
-
-    if (isNaN(quantity) || quantity < 1) {
-        alert("❌ Please enter a valid quantity (1 or more).");
-        return;
-    }
-
-    try {
-        const response = await fetch(`${backendUrl}/cart/add`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, productId, quantity }) // ✅ Send valid quantity
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert(`✅ ${quantity} item(s) added to cart!`);
-            fetchCart();
-        } else {
-            alert(`❌ Error: ${data.message}`);
-        }
-    } catch (error) {
-        console.error("❌ Error adding to cart:", error);
-    }
-}
-
 
 // ✅ Function to Remove Item from Cart
 async function removeFromCart(productId) {
