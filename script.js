@@ -266,12 +266,12 @@ async function addToCart(productId) {
         return;
     }
 
-    // ✅ Prompt user for quantity
+    // ✅ Prompt user for quantity & validate input
     let quantity = prompt("Enter quantity:", "1");
-    quantity = parseInt(quantity);
+    quantity = parseInt(quantity, 10);
 
     if (isNaN(quantity) || quantity < 1) {
-        alert("Please enter a valid quantity (1 or more).");
+        alert("❌ Please enter a valid quantity (1 or more).");
         return;
     }
 
@@ -279,20 +279,23 @@ async function addToCart(productId) {
         const response = await fetch(`${backendUrl}/cart/add`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, productId, quantity })
+            body: JSON.stringify({ userId, productId, quantity }) // ✅ Ensure quantity is included
         });
 
         const data = await response.json();
 
         if (response.ok) {
             alert(`✅ ${quantity} item(s) added to cart!`);
+            fetchCart(); // ✅ Refresh cart after adding item
         } else {
             alert(`❌ Error: ${data.message}`);
         }
     } catch (error) {
         console.error("❌ Error adding to cart:", error);
+        alert("❌ Failed to add item to cart. Try again.");
     }
 }
+
 
 // ✅ Ensure product cards have a quantity selector
 function displayProducts(products) {
@@ -307,11 +310,49 @@ function displayProducts(products) {
             <img src="${product.image}" width="150" height="150">
             <p><strong>Description:</strong> ${product.description}</p>
             <p><strong>Price:</strong> $${product.price}</p>
-            <button onclick="addToCart('${product._id}')">Add to Cart</button>
+            <input type="number" id="qty-${product._id}" value="1" min="1" style="width: 50px;">
+            <button onclick="addToCartWithQuantity('${product._id}')">Add to Cart</button>
         `;
         productList.appendChild(productItem);
     });
 }
+
+// ✅ Separate function for adding to cart with input field quantity
+async function addToCartWithQuantity(productId) {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+        alert("Please log in first!");
+        window.location.href = "login.html";
+        return;
+    }
+
+    let quantity = parseInt(document.getElementById(`qty-${productId}`).value, 10);
+
+    if (isNaN(quantity) || quantity < 1) {
+        alert("❌ Please enter a valid quantity (1 or more).");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${backendUrl}/cart/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, productId, quantity }) // ✅ Send valid quantity
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(`✅ ${quantity} item(s) added to cart!`);
+            fetchCart();
+        } else {
+            alert(`❌ Error: ${data.message}`);
+        }
+    } catch (error) {
+        console.error("❌ Error adding to cart:", error);
+    }
+}
+
 
 // ✅ Function to Remove Item from Cart
 async function removeFromCart(productId) {
