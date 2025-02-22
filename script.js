@@ -96,15 +96,12 @@ async function fetchFilteredProducts() {
     const maxPrice = document.getElementById("maxPrice").value;
     const inStock = document.getElementById("inStock").checked ? "true" : "";
 
-    let params = new URLSearchParams();
-if (query) params.append("query", query);
-if (category) params.append("category", category);
-if (minPrice) params.append("minPrice", minPrice);
-if (maxPrice) params.append("maxPrice", maxPrice);
-if (inStock) params.append("inStock", "true");
-
-let apiUrl = `${backendUrl}/products/search?${params.toString()}`;
-
+    let apiUrl = `${backendUrl}/products/search?`;
+    if (query) apiUrl += `query=${query}&`;
+    if (category) apiUrl += `category=${category}&`;
+    if (minPrice) apiUrl += `minPrice=${minPrice}&`;
+    if (maxPrice) apiUrl += `maxPrice=${maxPrice}&`;
+    if (inStock) apiUrl += `inStock=true&`;
 
     try {
         const response = await fetch(apiUrl);
@@ -117,12 +114,7 @@ let apiUrl = `${backendUrl}/products/search?${params.toString()}`;
     } catch (error) {
         console.error("❌ Error fetching filtered products:", error);
     }
-    console.log("📡 API URL Sent:", apiUrl);
-    console.log("✅ Filtered Products received:", products);
 }
-document.getElementById("filterButton").addEventListener("click", fetchFilteredProducts);
-
-
 
 // Display Products in Grid
 function displayProducts(products) {
@@ -350,4 +342,4 @@ if (document.getElementById("registerForm")) document.getElementById("registerFo
 if (document.getElementById("loginForm")) document.getElementById("loginForm").addEventListener("submit", loginUser);
 if (document.getElementById("productList")) fetchProducts();
 if (document.getElementById("cart")) fetchCart();
-
+document.getElementById("filterButton").addEventListener("click", fetchFilteredProducts);
