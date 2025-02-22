@@ -1,6 +1,5 @@
 const backendUrl = "https://toy-store-backend.onrender.com";
 
-
 // Redirect Unauthenticated Users to Login
 function checkAuth() {
     const token = localStorage.getItem("token");
@@ -80,8 +79,6 @@ async function fetchProducts() {
         if (!response.ok) throw new Error("Failed to fetch products");
 
         const products = await response.json();
-        console.log("✅ Products received:", products);
-
         displayProducts(products);
     } catch (error) {
         console.error("❌ Error fetching products:", error);
@@ -108,8 +105,6 @@ async function fetchFilteredProducts() {
         if (!response.ok) throw new Error("Failed to fetch filtered products");
 
         const products = await response.json();
-        console.log("✅ Filtered Products received:", products);
-
         displayProducts(products);
     } catch (error) {
         console.error("❌ Error fetching filtered products:", error);
@@ -129,15 +124,13 @@ function displayProducts(products) {
             <img src="${product.image}" width="150" height="150">
             <p><strong>Description:</strong> ${product.description}</p>
             <p><strong>Price:</strong> $${product.price}</p>
-            <button onclick="addToCart('${product._id}', ${product.price})">Add to Cart</button>
+            <button onclick="addToCart('${product._id}')">Add to Cart</button>
         `;
         productList.appendChild(productItem);
     });
 }
 
 // Fetch Cart Items & Display Product Names with Total Price
-// ✅ Fetch Cart Items & Display Product Names with Total Price
-// ✅ Fetch Cart Items & Display Product Names with Quantity Controls
 async function fetchCart() {
     const userId = localStorage.getItem("userId");
     if (!userId) {
@@ -151,8 +144,6 @@ async function fetchCart() {
         if (!response.ok) throw new Error("Failed to fetch cart");
 
         const cart = await response.json();
-        console.log("🛒 Cart Items Received:", cart);
-
         const cartDiv = document.getElementById("cart");
         const totalPriceElement = document.getElementById("totalPrice");
 
@@ -165,7 +156,6 @@ async function fetchCart() {
             return;
         }
 
-        // ✅ Display each cart item properly with update and remove buttons
         cart.items.forEach(item => {
             totalPrice += item.quantity * item.price;
 
@@ -188,67 +178,8 @@ async function fetchCart() {
         console.error("❌ Error fetching cart:", error);
     }
 }
-async function updateCartQuantity(productId) {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in first!");
-        window.location.href = "login.html";
-        return;
-    }
 
-    const quantity = parseInt(document.getElementById(`qty-${productId}`).value);
-    if (isNaN(quantity) || quantity < 1) {
-        alert("Please enter a valid quantity (1 or more).");
-        return;
-    }
-
-    try {
-        const response = await fetch(`${backendUrl}/cart/update`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, productId, quantity })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert("✅ Cart updated successfully!");
-            fetchCart(); // Refresh cart
-        } else {
-            alert(`❌ Error: ${data.message}`);
-        }
-    } catch (error) {
-        console.error("❌ Error updating cart:", error);
-    }
-}
-
-
-// Checkout Function
-async function checkout() {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in first!");
-        window.location.href = "login.html";
-        return;
-    }
-
-    const response = await fetch(`${backendUrl}/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId })
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-        alert("✅ Checkout successful! Your order has been placed.");
-        window.location.href = "products.html"; // Redirect to products page
-    } else {
-        alert(`❌ Error: ${data.message}`);
-    }
-}
-
-// ✅ Function to Add Product to Cart with Quantity Selection
+// Function to Add Product to Cart
 async function addToCart(productId) {
     const userId = localStorage.getItem("userId");
     if (!userId) {
@@ -257,7 +188,6 @@ async function addToCart(productId) {
         return;
     }
 
-    // ✅ Prompt user for quantity
     let quantity = prompt("Enter quantity:", "1");
     quantity = parseInt(quantity);
 
@@ -273,68 +203,16 @@ async function addToCart(productId) {
             body: JSON.stringify({ userId, productId, quantity })
         });
 
-        const data = await response.json();
-
         if (response.ok) {
             alert(`✅ ${quantity} item(s) added to cart!`);
         } else {
+            const data = await response.json();
             alert(`❌ Error: ${data.message}`);
         }
     } catch (error) {
         console.error("❌ Error adding to cart:", error);
     }
 }
-
-// ✅ Ensure product cards have a quantity selector
-function displayProducts(products) {
-    const productList = document.getElementById("productList");
-    productList.innerHTML = "";
-
-    products.forEach(product => {
-        const productItem = document.createElement("div");
-        productItem.classList.add("grid-item");
-        productItem.innerHTML = `
-            <h3>${product.name}</h3>
-            <img src="${product.image}" width="150" height="150">
-            <p><strong>Description:</strong> ${product.description}</p>
-            <p><strong>Price:</strong> $${product.price}</p>
-            <button onclick="addToCart('${product._id}')">Add to Cart</button>
-        `;
-        productList.appendChild(productItem);
-    });
-}
-
-// ✅ Function to Remove Item from Cart
-async function removeFromCart(productId) {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in first!");
-        window.location.href = "login.html";
-        return;
-    }
-
-    if (!confirm("Are you sure you want to remove this item from the cart?")) return;
-
-    try {
-        const response = await fetch(`${backendUrl}/cart/remove`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, productId })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert("✅ Item removed from cart!");
-            fetchCart(); // Refresh cart
-        } else {
-            alert(`❌ Error: ${data.message}`);
-        }
-    } catch (error) {
-        console.error("❌ Error removing item from cart:", error);
-    }
-}
-
 
 // Event Listeners
 checkAuth();
